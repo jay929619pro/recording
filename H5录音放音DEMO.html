@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>录音演示</title>
     <link rel="stylesheet" href="style.css" />
+    <!-- 添加 Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   </head>
   <body>
-    <div class="app">
-      <div class="audio-controls">
-        <button id="record">录音</button>
-        <button id="stop">停止</button>
-        <audio id="audio" controls></audio>
-      </div>
-      <div id="msg">录音中...</div>
+    <div id="app">
+      <audio-recorder></audio-recorder>
     </div>
     <script src="index.js"></script>
   </body>
