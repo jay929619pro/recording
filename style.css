@@ -40,22 +40,6 @@
   background: #3498db;
 }
 
-audio {
-  margin-left: 10px;
-  border-radius: 20px;
-  background: transparent;
-}
-
-/* 美化音频控件 */
-audio::-webkit-media-controls-panel {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-audio::-webkit-media-controls-play-button {
-  background-color: #e74c3c;
-  border-radius: 50%;
-}
-
 /* 移动端适配 */
 @media screen and (max-width: 480px) {
   .audio-controls {
@@ -78,4 +62,36 @@ audio::-webkit-media-controls-play-button {
 
 button:focus {
   outline: none;
+}
+
+.audio-list {
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+.audio-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.audio-item audio {
+  flex: 1;
+  margin: 0;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }

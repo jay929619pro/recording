@@ -19,9 +19,16 @@
           <button @click="recording ? stop() : start()" class="record-btn" :class="{ 'recording': recording }">
             <i :class="recording ? 'fas fa-stop' : 'fas fa-microphone'"></i>
           </button>
-          <audio ref="audioElement" controls></audio>
         </div>
         <div id="msg" :style="{ visibility: recording ? 'visible' : 'hidden' }">录音中...</div>
+        <div class="audio-list">
+          <div v-for="(audio, index) in audioList" :key="index" class="audio-item">
+            <audio :src="audio.url" controls @play="handlePlay($event, index)"></audio>
+            <button class="delete-btn" @click="deleteAudio(index)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <script src="index.js"></script>

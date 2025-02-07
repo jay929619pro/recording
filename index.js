@@ -14,6 +14,8 @@ const app = createApp({
     const context = ref(null);
     const stream = ref(null);
     const audioElement = ref(null);
+    const audioList = ref([]);
+    const currentPlayingIndex = ref(null);
 
     const AudioContext = window.AudioContext || window.webkitAudioContext;
 
@@ -148,14 +150,53 @@ const app = createApp({
 
       const blob = new Blob([view], { type: "audio/wav" });
       const audioUrl = URL.createObjectURL(blob);
-      audioElement.value.src = audioUrl;
+
+      // 添加新录音到列表
+      audioList.value.push({
+        url: audioUrl,
+        timestamp: new Date().toLocaleTimeString()
+      });
     };
+
+    // 新增：删除录音
+    const deleteAudio = index => {
+      URL.revokeObjectURL(audioList.value[index].url); // 释放URL
+      audioList.value.splice(index, 1);
+    };
+
+    // 处理音频播放
+    const handlePlay = (event, index) => {
+      // 如果点击的不是当前正在播放的音频
+      if (currentPlayingIndex.value !== index) {
+        // 停止当前正在播放的音频
+        if (currentPlayingIndex.value !== null) {
+          const currentAudio = document.querySelectorAll("audio")[currentPlayingIndex.value];
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        }
+        // 更新当前播放的音频索引
+        currentPlayingIndex.value = index;
+      }
+    };
+
+    // 监听音频结束事件
+    const handleEnded = () => {
+      currentPlayingIndex.value = null;
+    };
+
+    // 在组件挂载后添加音频结束事件监听
+    onMounted(() => {
+      document.addEventListener("ended", handleEnded, true);
+    });
 
     return {
       recording,
+      audioList,
       audioElement,
       start,
-      stop
+      stop,
+      deleteAudio,
+      handlePlay
     };
   }
 });
