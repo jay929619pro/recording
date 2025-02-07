@@ -4,368 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>录音放音演示</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-      }
-      .controls {
-        margin: 20px 0;
-      }
-      button {
-        padding: 10px 20px;
-        margin: 5px;
-        font-size: 16px;
-        cursor: pointer;
-      }
-      #status {
-        margin-top: 20px;
-        color: #666;
-      }
-      #audioContainer {
-        margin-top: 20px;
-      }
-      .audio-item {
-        position: relative;
-        display: flex;
-        align-items: center;
-        margin: 10px 0;
-        padding: 8px 12px;
-        background: #4caf50;
-        border-radius: 4px;
-        max-width: 200px;
-        cursor: pointer;
-        user-select: none;
-        color: white;
-        overflow: hidden;
-      }
-      .audio-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 1;
-        font-size: 14px;
-      }
-      .audio-icon {
-        display: flex;
-        align-items: center;
-      }
-      .audio-icon svg {
-        width: 16px;
-        height: 16px;
-        fill: white;
-      }
-      .audio-duration {
-        flex: 1;
-      }
-      .audio-wave {
-        width: 16px;
-        height: 16px;
-        position: relative;
-      }
-      .wave-bar {
-        position: absolute;
-        bottom: 0;
-        width: 2px;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 1px;
-      }
-      .wave-bar:nth-child(1) {
-        left: 0;
-        height: 8px;
-      }
-      .wave-bar:nth-child(2) {
-        left: 4px;
-        height: 12px;
-      }
-      .wave-bar:nth-child(3) {
-        left: 8px;
-        height: 16px;
-      }
-      .wave-bar:nth-child(4) {
-        left: 12px;
-        height: 10px;
-      }
-
-      @keyframes waveAnimation {
-        0% {
-          transform: scaleY(0.5);
-        }
-        50% {
-          transform: scaleY(1);
-        }
-        100% {
-          transform: scaleY(0.5);
-        }
-      }
-
-      .playing .wave-bar {
-        animation: waveAnimation 1s infinite;
-      }
-      .wave-bar:nth-child(1) {
-        animation-delay: 0s;
-      }
-      .wave-bar:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-      .wave-bar:nth-child(3) {
-        animation-delay: 0.4s;
-      }
-      .wave-bar:nth-child(4) {
-        animation-delay: 0.6s;
-      }
-
-      .progress-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 0%;
-        background: rgba(0, 0, 0, 0.1);
-        transition: width 0.1s linear;
-      }
-
-      .progress-bg.no-transition {
-        transition: none;
-      }
-
-      .audio-content {
-        position: relative;
-        display: flex;
-        align-items: center;
-        width: 100%;
-        z-index: 1;
-      }
-    </style>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   </head>
+  <link rel="stylesheet" href="style.css" />
   <body>
-    <h1>录音放音演示</h1>
+    <div id="app">
+      <h1>录音放音演示</h1>
 
-    <div class="controls">
-      <button id="recordBtn">长按开始录音</button>
-    </div>
+      <div class="controls">
+        <button
+          @mousedown="startRecording"
+          @mouseup="stopRecording"
+          @mouseleave="stopRecording"
+          @touchstart.prevent="startRecording"
+          @touchend.prevent="stopRecording"
+        >
+          {{ recordBtnText }}
+        </button>
+      </div>
 
-    <div id="status">状态: 等待开始录音</div>
-    <div id="audioContainer"></div>
+      <div id="status">状态: {{ status }}</div>
 
-    <script>
-      let mediaRecorder;
-      let audioChunks = [];
-      let audioBlob;
-      let isRecording = false;
-      let startTime;
-      let recordings = [];
-      const MIN_DURATION = 1000; // 最短录音时间（毫秒）
-
-      // 获取用户媒体设备
-      async function startRecording() {
-        if (isRecording) return;
-
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-          startTime = Date.now();
-
-          mediaRecorder.ondataavailable = event => {
-            audioChunks.push(event.data);
-          };
-
-          mediaRecorder.onstop = () => {
-            const duration = Date.now() - startTime;
-
-            // 停止所有音轨
-            mediaRecorder.stream.getTracks().forEach(track => track.stop());
-
-            // 检查录音时长是否太短
-            if (duration < MIN_DURATION) {
-              updateStatus("录音时间太短");
-              isRecording = false;
-              document.getElementById("recordBtn").textContent = "长按开始录音";
-              return;
-            }
-
-            const durationInSeconds = (duration / 1000).toFixed(1);
-            audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-            const audioUrl = URL.createObjectURL(audioBlob);
-
-            // 保存录音信息
-            recordings.push({
-              url: audioUrl,
-              duration: durationInSeconds,
-              timestamp: new Date().toLocaleTimeString()
-            });
-
-            // 更新音频列表显示
-            updateAudioList();
-
-            updateStatus("录音完成");
-            isRecording = false;
-            document.getElementById("recordBtn").textContent = "长按开始录音";
-          };
-
-          mediaRecorder.start();
-          isRecording = true;
-          updateStatus("正在录音...");
-          document.getElementById("recordBtn").textContent = "松开停止录音";
-        } catch (err) {
-          console.error("访问麦克风失败:", err);
-          updateStatus("无法访问麦克风");
-          isRecording = false;
-          document.getElementById("recordBtn").textContent = "长按开始录音";
-        }
-      }
-
-      function formatTime(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs.toString().padStart(2, "0")}`;
-      }
-
-      function updateAudioList() {
-        const container = document.getElementById("audioContainer");
-        container.innerHTML = "";
-
-        recordings.forEach((recording, index) => {
-          const audioItem = document.createElement("div");
-          audioItem.className = "audio-item";
-
-          // 添加进度背景
-          const progressBg = document.createElement("div");
-          progressBg.className = "progress-bg";
-
-          // 添加内容容器
-          const audioContent = document.createElement("div");
-          audioContent.className = "audio-content";
-
-          const audio = new Audio(recording.url);
-
-          const info = document.createElement("div");
-          info.className = "audio-info";
-
-          // 音频图标
-          const audioIcon = document.createElement("div");
-          audioIcon.className = "audio-icon";
-          audioIcon.innerHTML = `
-            <div class="audio-wave">
-              <div class="wave-bar"></div>
-              <div class="wave-bar"></div>
-              <div class="wave-bar"></div>
-              <div class="wave-bar"></div>
+      <div id="audioContainer">
+        <div
+          v-for="(recording, index) in recordings"
+          :key="index"
+          class="audio-item"
+          @click="togglePlay(recording)"
+          :class="{ playing: recording.isPlaying }"
+        >
+          <div class="progress-bg" :class="{ 'no-transition': recording.noTransition }" :style="{ width: recording.progress + '%' }"></div>
+          <div class="audio-content">
+            <div class="audio-info">
+              <div class="audio-icon">
+                <div class="audio-wave">
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                </div>
+              </div>
+              <div class="audio-duration">{{ recording.duration }}"</div>
             </div>
-          `;
-
-          // 时长显示
-          const duration = document.createElement("div");
-          duration.className = "audio-duration";
-          duration.textContent = `${recording.duration}"`;
-
-          info.appendChild(audioIcon);
-          info.appendChild(duration);
-
-          let isPlaying = false;
-
-          // 更新播放进度
-          audio.addEventListener("timeupdate", () => {
-            if (isPlaying) {
-              const progress = (audio.currentTime / audio.duration) * 100;
-              progressBg.style.width = `${progress}%`;
-            }
-          });
-
-          function togglePlay() {
-            const allAudios = document.querySelectorAll("audio");
-            const allItems = document.querySelectorAll(".audio-item");
-            const allProgressBgs = document.querySelectorAll(".progress-bg");
-
-            // 停止所有其他正在播放的音频
-            allAudios.forEach(a => {
-              if (a !== audio) {
-                a.pause();
-                a.currentTime = 0;
-              }
-            });
-
-            // 重置所有播放状态
-            allItems.forEach(item => {
-              item.classList.remove("playing");
-            });
-
-            // 重置所有进度条
-            allProgressBgs.forEach(bg => {
-              bg.classList.add("no-transition");
-              bg.style.width = "0%";
-              // 触发重排以确保过渡效果被移除
-              void bg.offsetWidth;
-              bg.classList.remove("no-transition");
-            });
-
-            if (audio.paused) {
-              audio.play();
-              audioItem.classList.add("playing");
-              isPlaying = true;
-            } else {
-              audio.pause();
-              audio.currentTime = 0;
-              audioItem.classList.remove("playing");
-              isPlaying = false;
-              progressBg.classList.add("no-transition");
-              progressBg.style.width = "0%";
-              void progressBg.offsetWidth;
-              progressBg.classList.remove("no-transition");
-            }
-          }
-
-          audio.addEventListener("ended", () => {
-            audioItem.classList.remove("playing");
-            isPlaying = false;
-            progressBg.classList.add("no-transition");
-            progressBg.style.width = "0%";
-            void progressBg.offsetWidth;
-            progressBg.classList.remove("no-transition");
-          });
-
-          audioItem.addEventListener("click", togglePlay);
-
-          audioContent.appendChild(info);
-          audioItem.appendChild(progressBg);
-          audioItem.appendChild(audioContent);
-          container.appendChild(audioItem);
-        });
-      }
-
-      function stopRecording() {
-        if (mediaRecorder && mediaRecorder.state !== "inactive") {
-          mediaRecorder.stop();
-        }
-      }
-
-      function updateStatus(text) {
-        document.getElementById("status").textContent = `状态: ${text}`;
-      }
-
-      // 长按录音相关事件监听
-      const recordBtn = document.getElementById("recordBtn");
-
-      recordBtn.addEventListener("mousedown", startRecording);
-      recordBtn.addEventListener("mouseup", stopRecording);
-      recordBtn.addEventListener("mouseleave", stopRecording);
-
-      // 移动端触摸事件支持
-      recordBtn.addEventListener("touchstart", e => {
-        e.preventDefault(); // 阻止默认行为
-        startRecording();
-      });
-
-      recordBtn.addEventListener("touchend", e => {
-        e.preventDefault();
-        stopRecording();
-      });
-
-      // 初始化
-      updateStatus("准备就绪");
-    </script>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
+
+  <script src="index.js"></script>
 </html>

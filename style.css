@@ -1,0 +1,133 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+}
+.controls {
+  margin: 20px 0;
+}
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+#status {
+  margin-top: 20px;
+  color: #666;
+}
+#audioContainer {
+  margin-top: 20px;
+}
+.audio-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  padding: 8px 12px;
+  background: #4caf50;
+  border-radius: 4px;
+  max-width: 200px;
+  cursor: pointer;
+  user-select: none;
+  color: white;
+  overflow: hidden;
+}
+.audio-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  font-size: 14px;
+}
+.audio-icon {
+  display: flex;
+  align-items: center;
+}
+.audio-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: white;
+}
+.audio-duration {
+  flex: 1;
+}
+.audio-wave {
+  width: 16px;
+  height: 16px;
+  position: relative;
+}
+.wave-bar {
+  position: absolute;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 1px;
+}
+.wave-bar:nth-child(1) {
+  left: 0;
+  height: 8px;
+}
+.wave-bar:nth-child(2) {
+  left: 4px;
+  height: 12px;
+}
+.wave-bar:nth-child(3) {
+  left: 8px;
+  height: 16px;
+}
+.wave-bar:nth-child(4) {
+  left: 12px;
+  height: 10px;
+}
+
+@keyframes waveAnimation {
+  0% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.5);
+  }
+}
+
+.playing .wave-bar {
+  animation: waveAnimation 1s infinite;
+}
+.wave-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.wave-bar:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.wave-bar:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.wave-bar:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.progress-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: rgba(0, 0, 0, 0.1);
+  transition: width 0.1s linear;
+}
+
+.progress-bg.no-transition {
+  transition: none;
+}
+
+.audio-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  z-index: 1;
+}
