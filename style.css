@@ -1,6 +1,6 @@
 #msg {
   visibility: hidden;
-  color: red;
+  color: white;
   font-weight: bold;
   font-size: 16px;
 }
@@ -10,37 +10,110 @@
   align-items: center;
   padding: 20px;
   justify-content: center;
-  gap: 10px;
+  gap: 20px;
 }
 
-button {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  background: white;
+.record-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: none;
+  background: #e74c3c;
+  color: white;
+  font-size: 24px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-button:hover {
-  background: #f5f5f5;
+.record-btn:hover {
+  transform: scale(1.05);
+  background: #c0392b;
 }
 
-canvas {
-  margin-top: 10px;
-  background-color: black;
+.record-btn.recording {
+  animation: pulse 1.5s infinite;
 }
 
-select {
-  height: 25px;
-  margin: 0px 5px;
+.stop-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: #3498db;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: scale(0);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-a {
-  margin-left: 20px;
+.stop-btn.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(231, 76, 60, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+  }
+}
+
+audio {
+  margin-left: 10px;
+  border-radius: 20px;
+  background: transparent;
+}
+
+/* 美化音频控件 */
+audio::-webkit-media-controls-panel {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+audio::-webkit-media-controls-play-button {
+  background-color: #e74c3c;
+  border-radius: 50%;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 480px) {
+  .audio-controls {
+    flex-wrap: wrap;
+  }
+
+  audio {
+    margin-top: 20px;
+    width: 90%;
+  }
 }
 
 .app {
   text-align: center;
   padding-top: 20px;
+  background: #2c3e50;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button:focus {
+  outline: none;
+}
+
+.record-btn:active {
+  transform: scale(0.95);
+}
+
+.stop-btn:active {
+  transform: scale(0.95);
 }

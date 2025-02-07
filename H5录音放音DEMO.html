@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>录音演示</title>
+    <!-- 添加 normalize.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <!-- 添加 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css" />
     <!-- 添加 Vue 3 CDN -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -12,8 +16,12 @@
     <div id="app">
       <div class="app">
         <div class="audio-controls">
-          <button @click="start">录音</button>
-          <button @click="stop">停止</button>
+          <button @click="start" class="record-btn" :class="{ 'recording': recording }">
+            <i class="fas fa-microphone"></i>
+          </button>
+          <button @click="stop" class="stop-btn" :class="{ 'show': recording }">
+            <i class="fas fa-stop"></i>
+          </button>
           <audio ref="audioElement" controls></audio>
         </div>
         <div id="msg" :style="{ visibility: recording ? 'visible' : 'hidden' }">录音中...</div>
