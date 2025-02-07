@@ -1,56 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>录音放音演示</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  </head>
-  <link rel="stylesheet" href="style.css" />
-  <body>
-    <div id="app">
-      <h1>录音放音演示</h1>
-
-      <div class="controls">
-        <button
-          @mousedown="startRecording"
-          @mouseup="stopRecording"
-          @mouseleave="stopRecording"
-          @touchstart.prevent="startRecording"
-          @touchend.prevent="stopRecording"
-        >
-          {{ recordBtnText }}
-        </button>
-      </div>
-
-      <div id="status">状态: {{ status }}</div>
-
-      <div id="audioContainer">
-        <div
-          v-for="(recording, index) in recordings"
-          :key="index"
-          class="audio-item"
-          @click="togglePlay(recording)"
-          :class="{ playing: recording.isPlaying }"
-        >
-          <div class="progress-bg" :class="{ 'no-transition': recording.noTransition }" :style="{ width: recording.progress + '%' }"></div>
-          <div class="audio-content">
-            <div class="audio-info">
-              <div class="audio-icon">
-                <div class="audio-wave">
-                  <div class="wave-bar"></div>
-                  <div class="wave-bar"></div>
-                  <div class="wave-bar"></div>
-                  <div class="wave-bar"></div>
-                </div>
-              </div>
-              <div class="audio-duration">{{ recording.duration }}"</div>
-            </div>
-          </div>
-        </div>
-      </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <select name="" id="micSelect"></select>
+  
+    <select id="visSelect">
+      <option value="frequencybars">Bar</option>
+      <option value="sinewave">Wave</option>
+      <option value="circle">Circle</option>
+    </select>
+  
+    <a id="download" >Download</a>
+  
+    <div class="audio-controls">
+      <button id="record">Record</button>
+      <button id="stop">Stop</button>
+      <audio id="audio" controls></audio>
     </div>
-  </body>
+  
+    <div id="msg">Recording...</div>
+    <canvas width="500" height="300"></canvas>
+  <div>
 
   <script src="index.js"></script>
+</body>
 </html>
