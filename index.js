@@ -23,9 +23,9 @@ const app = createApp({
     const checkMicrophonePermission = async () => {
       try {
         const permissionStatus = await navigator.permissions.query({ name: "microphone" });
-        return permissionStatus.state === "granted";
+        return permissionStatus.state; // 返回具体状态，而不是布尔值
       } catch (err) {
-        return false;
+        return "prompt"; // 如果不支持权限查询，返回 prompt 状态
       }
     };
 
@@ -99,15 +99,18 @@ const app = createApp({
 
     // 开始录音
     const start = async () => {
+      const permissionState = await checkMicrophonePermission();
+
+      // 如果权限状态是 denied，提示用户在浏览器设置中允许麦克风访问
+      if (permissionState === "denied") {
+        alert("请在浏览器设置中允许访问麦克风，然后重试");
+        return;
+      }
+
+      // 无论权限状态是 prompt 还是 granted，都尝试获取音频流
       if (!stream.value) {
-        const hasPermission = await checkMicrophonePermission();
-        if (hasPermission) {
-          await getStream();
-        } else {
-          const granted = await getStream();
-          if (!granted) return;
-          return;
-        }
+        const granted = await getStream();
+        if (!granted) return;
       }
 
       recording.value = true;
