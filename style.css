@@ -30,44 +30,14 @@
 
 .record-btn:hover {
   transform: scale(1.05);
-  background: #c0392b;
+}
+
+.record-btn:active {
+  transform: scale(0.95);
 }
 
 .record-btn.recording {
-  animation: pulse 1.5s infinite;
-}
-
-.stop-btn {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: none;
   background: #3498db;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  opacity: 0;
-  transform: scale(0);
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.stop-btn.show {
-  opacity: 1;
-  transform: scale(1);
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 20px rgba(231, 76, 60, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
-  }
 }
 
 audio {
@@ -108,12 +78,4 @@ audio::-webkit-media-controls-play-button {
 
 button:focus {
   outline: none;
-}
-
-.record-btn:active {
-  transform: scale(0.95);
-}
-
-.stop-btn:active {
-  transform: scale(0.95);
 }

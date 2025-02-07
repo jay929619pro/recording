@@ -16,11 +16,8 @@
     <div id="app">
       <div class="app">
         <div class="audio-controls">
-          <button @click="start" class="record-btn" :class="{ 'recording': recording }">
-            <i class="fas fa-microphone"></i>
-          </button>
-          <button @click="stop" class="stop-btn" :class="{ 'show': recording }">
-            <i class="fas fa-stop"></i>
+          <button @click="recording ? stop() : start()" class="record-btn" :class="{ 'recording': recording }">
+            <i :class="recording ? 'fas fa-stop' : 'fas fa-microphone'"></i>
           </button>
           <audio ref="audioElement" controls></audio>
         </div>
