@@ -1,17 +1,7 @@
 const { createApp, ref, onMounted } = Vue;
 
-const AudioRecorder = {
-  template: `
-    <div class="app">
-      <div class="audio-controls">
-        <button @click="start">录音</button>
-        <button @click="stop">停止</button>
-        <audio ref="audioElement" controls></audio>
-      </div>
-      <div id="msg" :style="{ visibility: recording ? 'visible' : 'hidden' }">录音中...</div>
-    </div>
-  `,
-
+// 创建 Vue 应用
+const app = createApp({
   setup() {
     // 状态变量
     const leftchannel = ref([]);
@@ -167,13 +157,6 @@ const AudioRecorder = {
       start,
       stop
     };
-  }
-};
-
-// 创建 Vue 应用
-const app = createApp({
-  components: {
-    "audio-recorder": AudioRecorder
   }
 });
 
