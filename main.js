@@ -107,12 +107,15 @@ const app = createApp({
         return;
       }
 
-      // 无论权限状态是 prompt 还是 granted，都尝试获取音频流
+      // 如果没有音频流，先获取权限
       if (!stream.value) {
         const granted = await getStream();
         if (!granted) return;
+        // 首次获取权限成功后，直接返回，不开始录音
+        return;
       }
 
+      // 已有权限时，开始录音
       recording.value = true;
       leftchannel.value.length = rightchannel.value.length = 0;
       recordingLength.value = 0;
