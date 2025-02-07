@@ -6,16 +6,12 @@ body {
 }
 
 .app {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   position: relative;
 }
 
 /* 录音列表区域 */
 .audio-list {
-  flex: 1;
-  overflow-y: auto;
   padding: 20px;
   padding-bottom: 140px; /* 为底部按钮留出空间 */
 }
